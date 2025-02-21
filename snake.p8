@@ -17,6 +17,7 @@ local grid_size = 14    -- 14x14 grid to fit on screen
 local border_left = 8   -- centered horizontally (8px on each side)
 local border_top = 9    -- border starts at y=9 (1px gap after score)
 
+-- Initialize game state and sound effects
 function _init()
     -- initialize snake in middle of field
     snake = {{x=7,y=7},{x=6,y=7}}
@@ -30,6 +31,7 @@ function _init()
     -- place initial food
     place_new_food()
     
+    -- Initialize sound effects for movement, food collection, and game over
     -- movement sound (sfx 0)
     memset(0x3200,0,68)  -- clear entire sound slot
     poke(0x3200,8)       -- frequency
@@ -57,6 +59,7 @@ function _init()
     poke(0x329b,3)       -- note 3 effect
 end
 
+-- Handle user input and update game state
 function _update60()
     if not game_over then
         -- handle input
@@ -86,6 +89,7 @@ function _update60()
     end
 end
 
+-- Draw game state
 function _draw()
     cls()
     
@@ -128,15 +132,14 @@ function _draw()
     end
 end
 
+-- Place new food at a random position on the grid
 function place_new_food()
     while true do
-        -- random position within play field
         local new_food = {
             x = flr(rnd(grid_size)),
-            y = flr(rnd(grid_size))  -- removed -1 to match visual border
+            y = flr(rnd(grid_size))
         }
         
-        -- check if position is valid
         local valid = true
         for i,segment in pairs(snake) do
             if new_food.x == segment.x and
@@ -153,55 +156,55 @@ function place_new_food()
     end
 end
 
+-- Handle game over state
+function handle_game_over()
+    game_over = true
+    sfx(2)
+end
+
+-- Move the snake and update game state
 function move_snake()
-    -- get new head position
     local new_head = {
         x = snake[1].x + direction.x,
         y = snake[1].y + direction.y
     }
     
-    -- check wall collision with play field boundaries
+    -- Check for collision with boundaries
     if new_head.x < 0 or 
        new_head.x >= grid_size or
        new_head.y < 0 or 
-       new_head.y >= grid_size then  -- removed -1 to match visual border
-        game_over = true
-        sfx(2)  -- play game over sound
+       new_head.y >= grid_size then
+        handle_game_over()
         return
     end
     
-    -- check self collision
+    -- Check for collision with self
     for i,segment in pairs(snake) do
         if new_head.x == segment.x and
            new_head.y == segment.y then
-            game_over = true
-            sfx(2)  -- play game over sound
+            handle_game_over()
             return
         end
     end
     
-    -- create new snake array with new head
+    -- Create new snake array with new head
     local new_snake = {new_head}
     for i=1,#snake do
         add(new_snake, snake[i])
     end
     
-    -- check food collision
+    -- Check for food collision
     if new_head.x == food.x and
        new_head.y == food.y then
-        -- play food sound
         sfx(1)
-        -- increase score
         score += 10
-        -- place new food
         place_new_food()
     else
-        -- remove tail if no food eaten
+        -- Remove tail if no food eaten
         del(new_snake, new_snake[#new_snake])
     end
     
-    -- update snake
+    -- Update snake
     snake = new_snake
-    -- play movement sound
     sfx(0)
 end
