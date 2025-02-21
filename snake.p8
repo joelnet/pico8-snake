@@ -15,7 +15,7 @@ local move_timer = 0
 local move_delay = 15  -- adjust this to control snake speed
 local sound_initialized = false
 local grid_size = 14    -- 14x14 grid to fit on screen
-local border_left = 4   -- border starts at x=4
+local border_left = 8   -- centered horizontally (8px on each side)
 local border_top = 9    -- border starts at y=9 (1px gap after score)
 
 function init_food_sound()
@@ -89,7 +89,7 @@ function _draw()
     cls()
     
     -- draw score above play field in top-left corner
-    print("score:"..score,5,2,7)
+    print("score:"..score,border_left,2,7)
     
     -- draw border around play field
     -- 113x113 pixels to fully enclose the 14x14 grid
@@ -189,7 +189,7 @@ function move_snake()
         -- play food sound
         sfx(1)
         -- increase score
-        score += 1
+        score += 10
         -- place new food
         place_new_food()
     else
