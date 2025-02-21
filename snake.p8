@@ -28,6 +28,8 @@ function _init()
     score = 0
     -- reset game over
     game_over = false
+    -- reset move_delay to initial value
+    move_delay = 15
     -- place initial food
     place_new_food()
     
@@ -84,6 +86,8 @@ function _update60()
         if btnp(❎) then
             game_over = false
             score = 0
+            -- reset move_delay to initial value
+            move_delay = 15
             _init()
         end
     end
