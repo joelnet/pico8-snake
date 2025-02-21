@@ -198,6 +198,7 @@ function move_snake()
        new_head.y == food.y then
         sfx(1)
         score += 10
+        move_delay = max(5, move_delay - 1)  -- decrease move_delay, but don't let it go below 5
         place_new_food()
     else
         -- Remove tail if no food eaten
