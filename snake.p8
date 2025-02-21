@@ -48,6 +48,21 @@ function _init()
     memset(0x3200,0,68)  -- clear entire sound slot
     poke(0x3200,8)       -- frequency
     poke(0x3201,2)       -- waveform (square)
+    
+    -- game over buzz (sfx 2)
+    memset(0x3290,0,68)  -- clear entire sound slot
+    poke(0x3290,16)      -- frequency
+    poke(0x3291,3)       -- waveform (triangle)
+    poke(0x3292,8)       -- volume
+    poke(0x3293,3)       -- effect (slide)
+    poke(0x3294,12)      -- note 2 frequency
+    poke(0x3295,3)       -- note 2 waveform
+    poke(0x3296,8)       -- note 2 volume
+    poke(0x3297,3)       -- note 2 effect
+    poke(0x3298,8)       -- note 3 frequency
+    poke(0x3299,3)       -- note 3 waveform
+    poke(0x329a,8)       -- note 3 volume
+    poke(0x329b,3)       -- note 3 effect
 end
 
 function _update60()
@@ -159,6 +174,7 @@ function move_snake()
        new_head.y < 0 or 
        new_head.y >= grid_size then  -- removed -1 to match visual border
         game_over = true
+        sfx(2)  -- play game over sound
         return
     end
     
@@ -167,6 +183,7 @@ function move_snake()
         if new_head.x == segment.x and
            new_head.y == segment.y then
             game_over = true
+            sfx(2)  -- play game over sound
             return
         end
     end
