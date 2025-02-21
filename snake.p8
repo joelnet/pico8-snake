@@ -13,21 +13,9 @@ local score = 0
 local game_over = false
 local move_timer = 0
 local move_delay = 15  -- adjust this to control snake speed
-local sound_initialized = false
 local grid_size = 14    -- 14x14 grid to fit on screen
 local border_left = 8   -- centered horizontally (8px on each side)
 local border_top = 9    -- border starts at y=9 (1px gap after score)
-
-function init_food_sound()
-    if not sound_initialized then
-        -- food sound (sfx 1)
-        memset(0x3248,0,68)  -- clear entire sound slot
-        poke(0x3248,32)      -- frequency
-        poke(0x3249,2)       -- waveform (square)
-        poke(0x324a,0)       -- stop after first note
-        sound_initialized = true
-    end
-end
 
 function _init()
     -- initialize snake in middle of field
@@ -41,13 +29,17 @@ function _init()
     game_over = false
     -- place initial food
     place_new_food()
-    -- initialize sound
-    init_food_sound()
     
     -- movement sound (sfx 0)
     memset(0x3200,0,68)  -- clear entire sound slot
     poke(0x3200,8)       -- frequency
     poke(0x3201,2)       -- waveform (square)
+
+    -- food sound (sfx 1)
+    memset(0x3248,0,68)  -- clear entire sound slot
+    poke(0x3248,32)      -- frequency
+    poke(0x3249,2)       -- waveform (square)
+    poke(0x324a,0)       -- stop after first note
     
     -- game over buzz (sfx 2)
     memset(0x3290,0,68)  -- clear entire sound slot
