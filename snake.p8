@@ -199,4 +199,6 @@ function move_snake()
     
     -- update snake
     snake = new_snake
+    -- play movement sound
+    sfx(0)
 end
